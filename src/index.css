@@ -8,13 +8,41 @@
 html,
 body,
 #root {
-  height: 100%;
+  min-height: 100%;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* 把背景挂到 html 上，覆盖整个文档高度，避免内容超出视口时露底 */
+  background-color: #0b0b12;
+  /* 渐变固定在视口位置，滚动时不重复也不被截断 */
+  background-image:
+    radial-gradient(1200px 600px at 20% -10%, rgba(99, 102, 241, 0.12), transparent),
+    radial-gradient(800px 400px at 100% 100%, rgba(236, 72, 153, 0.08), transparent);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: #e6e6f0;
 }
 
 body {
-  background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(99, 102, 241, 0.12), transparent),
-    radial-gradient(800px 400px at 100% 100%, rgba(236, 72, 153, 0.08), transparent),
-    #0b0b12;
-  color: #e6e6f0;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+  /* 兼容 iOS 安全区 */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+button,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+/* 隐藏横向滚动条但保留滚动行为 */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
