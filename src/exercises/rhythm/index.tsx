@@ -385,7 +385,7 @@ function PatternCard({
       : state === "wrong"
         ? "bg-rose-500/15 border-rose-400/60 ring-2 ring-rose-400/40"
         : state === "selected"
-          ? "bg-indigo-500/15 border-indigo-400/60 ring-2 ring-indigo-400/40"
+          ? "bg-white/12 border-zinc-200/60 ring-2 ring-white/25"
           : "bg-white/3 border-white/10 hover:bg-white/5";
 
   // 把 16 个 1/16 分成 4 组（每拍）
@@ -408,13 +408,13 @@ function PatternCard({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`relative text-left p-3 sm:p-4 rounded-xl border transition active:scale-[0.98] min-h-[88px] ${cls}`}
+      className={`relative text-left p-3 sm:p-4 rounded-[1.35rem] border shadow-[inset_0_1px_0_rgba(255,255,255,0.045)] transition active:scale-[0.98] min-h-[88px] ${cls}`}
     >
       <div className="flex items-center justify-between mb-2 sm:mb-3">
         <span className="text-xs text-white/40 uppercase tracking-wider">
           选项 {hotkey}
         </span>
-        <span className="text-[10px] text-white/40 bg-black/40 rounded px-1.5 py-0.5 hidden sm:inline">
+        <span className="text-[10px] text-zinc-200/60 bg-zinc-950/70 border border-white/10 rounded px-1.5 py-0.5 hidden sm:inline">
           按 {hotkey}
         </span>
       </div>
@@ -431,7 +431,7 @@ function PatternCard({
                   className={`flex-1 h-8 sm:h-7 rounded-sm border ${
                     on
                       ? isActive
-                        ? "bg-amber-300/80 border-amber-200"
+                        ? "bg-white/90 border-white"
                         : "bg-white/70 border-white/80"
                       : "bg-white/5 border-white/10"
                   }`}

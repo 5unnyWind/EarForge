@@ -53,10 +53,10 @@ export function HistoryPanel({
   const hasData = entries.length > 0;
 
   return (
-    <section className="rounded-2xl bg-white/[0.03] border border-white/10 overflow-hidden">
+    <section className="rounded-3xl bg-zinc-950/32 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.065),0_16px_46px_rgba(0,0,0,0.18)] backdrop-blur-xl overflow-hidden">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-3 text-left hover:bg-white/[0.02] transition"
+        className="w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-3 text-left hover:bg-white/2 transition"
       >
         <div className="flex items-center gap-3 min-w-0">
           <h3 className="text-sm font-semibold text-white/70">历史记录</h3>
@@ -76,7 +76,7 @@ export function HistoryPanel({
       </button>
 
       {open && (
-        <div className="px-4 sm:px-5 pb-5 pt-1 flex flex-col gap-4 text-sm border-t border-white/[0.06]">
+        <div className="px-4 sm:px-5 pb-5 pt-1 flex flex-col gap-4 text-sm border-t border-white/6">
           {!hasData ? (
             <p className="text-white/40 text-center py-4">
               答题之后这里会出现你的历史记录。
@@ -138,7 +138,7 @@ export function HistoryPanel({
                       clearHistory(moduleId);
                     }
                   }}
-                  className="!bg-rose-500/15 hover:!bg-rose-500/25 !text-rose-200"
+                  className="bg-rose-500/15! hover:bg-rose-500/25! text-rose-200!"
                 >
                   清空全部历史
                 </GhostButton>
@@ -160,7 +160,7 @@ function SummaryTile({
 }) {
   const acc = Number.isNaN(agg.accuracy) ? null : agg.accuracy;
   return (
-    <div className="rounded-lg bg-black/30 border border-white/10 px-3 py-2">
+    <div className="rounded-xl bg-zinc-950/45 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] px-3 py-2">
       <div className="text-[10px] uppercase tracking-wider text-white/40">
         {label}
       </div>
@@ -187,7 +187,7 @@ function TagRow({
     acc >= 0.85
       ? "bg-emerald-400"
       : acc >= 0.6
-        ? "bg-amber-400"
+        ? "bg-zinc-300"
         : "bg-rose-400";
   return (
     <li className="flex items-center gap-3">
@@ -222,7 +222,7 @@ function RecentRoundDot({
     : isZero
       ? "bg-rose-500/25 border-rose-400/60 text-rose-100"
       : acc >= 0.5
-        ? "bg-amber-500/20 border-amber-400/50 text-amber-100"
+        ? "bg-white/12 border-zinc-200/45 text-zinc-100"
         : "bg-rose-500/15 border-rose-400/40 text-rose-100";
   const tagText = entry.tags?.[0] ? (formatTag ? formatTag(entry.tags[0]) : entry.tags[0]) : null;
   const ago = formatRelative(entry.ts);

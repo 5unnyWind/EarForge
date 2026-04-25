@@ -71,12 +71,12 @@ export function Piano({
                 onClick={() => !disabled && onPress?.(m)}
                 disabled={disabled}
                 style={{ touchAction: "manipulation" }}
-                className={`flex-1 border border-neutral-700 rounded-b-md flex items-end justify-center pb-1.5 text-[10px] font-semibold transition relative
-                  ${active ? "bg-amber-300 text-amber-900" : "bg-white text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200"}
-                  ${mark === "correct" ? "!bg-emerald-300" : ""}
-                  ${mark === "wrong" ? "!bg-rose-300" : ""}
-                  ${mark === "missed" ? "!bg-amber-200" : ""}
-                  ${mark === "user" ? "!bg-indigo-200" : ""}
+                className={`flex-1 border border-zinc-700 rounded-b-md flex items-end justify-center pb-1.5 text-[10px] font-semibold transition relative shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]
+                  ${active ? "bg-zinc-200 text-zinc-950 ring-2 ring-white/70 z-10" : "bg-linear-to-b from-white to-zinc-300 text-zinc-700 hover:from-white hover:to-zinc-200 active:to-zinc-400"}
+                  ${mark === "correct" ? "bg-emerald-200!" : ""}
+                  ${mark === "wrong" ? "bg-rose-200!" : ""}
+                  ${mark === "missed" ? "bg-zinc-200!" : ""}
+                  ${mark === "user" ? "bg-slate-300!" : ""}
                 `}
               >
                 {showName ? midiToName(m) : ""}
@@ -100,12 +100,12 @@ export function Piano({
                 key={m}
                 onClick={() => !disabled && onPress?.(m)}
                 disabled={disabled}
-                className={`absolute top-0 h-[62%] rounded-b-sm border border-neutral-900 z-10 pointer-events-auto transition
-                  ${active ? "bg-amber-400" : "bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-900"}
-                  ${mark === "correct" ? "!bg-emerald-500" : ""}
-                  ${mark === "wrong" ? "!bg-rose-500" : ""}
-                  ${mark === "missed" ? "!bg-amber-500" : ""}
-                  ${mark === "user" ? "!bg-indigo-500" : ""}
+                className={`absolute top-0 h-[62%] rounded-b-sm border border-black z-10 pointer-events-auto transition shadow-[inset_0_-1px_0_rgba(255,255,255,0.14)]
+                  ${active ? "bg-zinc-300 ring-2 ring-white/70" : "bg-linear-to-b from-zinc-700 to-zinc-950 hover:from-zinc-600 active:to-black"}
+                  ${mark === "correct" ? "bg-emerald-500!" : ""}
+                  ${mark === "wrong" ? "bg-rose-500!" : ""}
+                  ${mark === "missed" ? "bg-zinc-500!" : ""}
+                  ${mark === "user" ? "bg-slate-500!" : ""}
                 `}
                 style={{
                   left: `${leftPct}%`,

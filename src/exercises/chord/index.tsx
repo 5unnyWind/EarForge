@@ -207,7 +207,7 @@ export default function ChordExercise() {
             )}
           </div>
 
-          <div className="rounded-xl bg-black/30 border border-white/10 p-5 min-h-[140px] flex items-center justify-center">
+          <div className="rounded-3xl bg-zinc-950/42 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.065),0_16px_46px_rgba(0,0,0,0.18)] backdrop-blur-xl p-5 min-h-[140px] flex items-center justify-center">
             {isRevealed && round.question && truth ? (
               <div className="flex flex-col items-center gap-3">
                 <div className={`text-3xl font-bold ${answer === truth.id ? "text-emerald-400" : "text-rose-400"}`}>
@@ -239,7 +239,7 @@ export default function ChordExercise() {
               <p className="text-white/60 text-sm inline-flex items-center gap-2">
                 {round.isPlaying ? (
                   <>
-                    <MusicNoteIcon size={18} className="text-amber-300 animate-pulse" />
+                    <MusicNoteIcon size={18} className="text-zinc-100 animate-pulse" />
                     仔细听…
                   </>
                 ) : (

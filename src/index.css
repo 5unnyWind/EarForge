@@ -14,14 +14,17 @@ body,
 html {
   -webkit-text-size-adjust: 100%;
   /* 把背景挂到 html 上，覆盖整个文档高度，避免内容超出视口时露底 */
-  background-color: #0b0b12;
+  background-color: #050608;
   /* 渐变固定在视口位置，滚动时不重复也不被截断 */
   background-image:
-    radial-gradient(1200px 600px at 20% -10%, rgba(99, 102, 241, 0.12), transparent),
-    radial-gradient(800px 400px at 100% 100%, rgba(236, 72, 153, 0.08), transparent);
+    radial-gradient(900px 520px at 16% -12%, rgba(244, 244, 245, 0.22), transparent 60%),
+    radial-gradient(680px 420px at 88% 4%, rgba(161, 161, 170, 0.16), transparent 58%),
+    radial-gradient(900px 560px at 50% 110%, rgba(39, 39, 42, 0.92), transparent 64%),
+    linear-gradient(135deg, #030406 0%, #101217 46%, #050608 100%);
   background-attachment: fixed;
   background-repeat: no-repeat;
-  color: #e6e6f0;
+  color: #f4f4f5;
+  text-rendering: geometricPrecision;
 }
 
 body {
@@ -29,6 +32,31 @@ body {
   -webkit-tap-highlight-color: transparent;
   /* 兼容 iOS 安全区 */
   padding-bottom: env(safe-area-inset-bottom);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 32rem),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 8%, transparent 0 18rem, rgba(0, 0, 0, 0.18) 42rem),
+    repeating-radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 4px);
+  mix-blend-mode: screen;
+  opacity: 0.42;
+}
+
+::selection {
+  background: rgba(244, 244, 245, 0.24);
+  color: white;
 }
 
 button,

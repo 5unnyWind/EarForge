@@ -252,10 +252,10 @@ export default function ContourExercise() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex items-start justify-between gap-3 flex-wrap">
+      <header className="flex items-start justify-between gap-3 flex-wrap px-1 sm:px-2">
         <div>
-          <h2 className="text-xl font-bold">上下行</h2>
-          <p className="text-sm text-white/60">
+          <h2 className="text-xl sm:text-2xl font-semibold tracking-[-0.03em]">上下行</h2>
+          <p className="text-sm text-zinc-300/60">
             听一段旋律，判断每相邻两音是上行还是下行
           </p>
         </div>
@@ -306,7 +306,7 @@ export default function ContourExercise() {
             )}
           </div>
 
-          <div className="rounded-xl bg-black/30 border border-white/10 p-3 sm:p-5 overflow-x-auto no-scrollbar">
+          <div className="rounded-3xl bg-zinc-950/42 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.065),0_16px_46px_rgba(0,0,0,0.18)] backdrop-blur-xl p-3 sm:p-5 overflow-x-auto no-scrollbar">
             {!isRevealed ? (
               <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-3 min-w-max mx-auto">
                 {melody.map((m, i) => (
@@ -425,27 +425,29 @@ export default function ContourExercise() {
 
 function IdleCard({ onStart, error }: { onStart: () => void; error: string | null }) {
   return (
-    <div className="text-center py-8 rounded-2xl bg-white/[0.04] border border-white/10">
-      <div className="mb-4 flex justify-center text-indigo-300/90">
+    <div className="relative overflow-hidden text-center py-9 rounded-[1.75rem] bg-zinc-950/38 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(0,0,0,0.35),0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+      <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-linear-to-r from-transparent via-white/35 to-transparent" />
+      <div className="pointer-events-none absolute -top-24 left-1/2 h-44 w-44 -translate-x-1/2 rounded-full bg-white/8 blur-3xl" />
+      <div className="mb-4 flex justify-center text-zinc-100/90">
         <HeadphonesIcon
           size={56}
-          className="drop-shadow-[0_4px_12px_rgba(99,102,241,0.35)]"
+          className="drop-shadow-[0_4px_16px_rgba(255,255,255,0.2)]"
         />
       </div>
       <h2 className="text-xl font-semibold mb-2">准备好了吗？</h2>
-      <p className="text-white/60 text-sm mb-6 px-4">
+      <p className="text-zinc-300/65 text-sm mb-6 px-4">
         点击开始，会随机抽一种乐器，播放几个音；你来判断每两个相邻音的方向。
       </p>
       <PrimaryButton onClick={onStart}>开始练习</PrimaryButton>
-      {error && <p className="mt-4 text-sm text-red-400">出错了：{error}</p>}
+      {error && <p className="mt-4 text-sm text-rose-300">出错了：{error}</p>}
     </div>
   );
 }
 
 function SettingsCard({ children }: { children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl bg-white/[0.03] border border-white/10 p-4 sm:p-5">
-      <h3 className="text-sm font-semibold text-white/70 mb-3 sm:mb-4">设置</h3>
+    <section className="rounded-3xl bg-zinc-950/32 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.065),0_16px_46px_rgba(0,0,0,0.18)] backdrop-blur-xl p-4 sm:p-5">
+      <h3 className="text-[13px] font-semibold uppercase tracking-[0.18em] text-zinc-100/68 mb-3 sm:mb-4">设置</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">{children}</div>
     </section>
   );
@@ -466,7 +468,7 @@ function DirectionPicker({
     <div
       onClick={onFocus}
       className={`flex flex-col gap-1.5 p-1 rounded-lg transition cursor-pointer ${
-        focused ? "ring-2 ring-amber-300/80 bg-amber-300/5" : "ring-2 ring-transparent"
+        focused ? "ring-2 ring-white/55 bg-white/8" : "ring-2 ring-transparent"
       }`}
     >
       <DirBtn dir="up" active={value === "up"} onClick={() => onChoose("up")} />
@@ -490,8 +492,8 @@ function DirBtn({
       aria-label={dir === "up" ? "上行" : "下行"}
       className={`w-10 h-10 sm:w-9 sm:h-9 rounded-md flex items-center justify-center transition border active:scale-95 ${
         active
-          ? "bg-indigo-500/40 border-indigo-300 text-white shadow-md shadow-indigo-500/30"
-          : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10"
+          ? "bg-white/18 border-zinc-200/60 text-white shadow-md shadow-white/10"
+          : "bg-white/5 border-white/10 text-zinc-300/65 hover:bg-white/10 hover:text-white"
       }`}
     >
       {dir === "up" ? <ArrowUpIcon size={18} /> : <ArrowDownIcon size={18} />}

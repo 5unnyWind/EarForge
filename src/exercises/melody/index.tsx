@@ -296,7 +296,7 @@ export default function MelodyExercise() {
           </div>
 
           {/* 答案槽位 */}
-          <div className="rounded-xl bg-black/30 border border-white/10 p-3 sm:p-5 overflow-x-auto no-scrollbar">
+          <div className="rounded-3xl bg-zinc-950/42 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.065),0_16px_46px_rgba(0,0,0,0.18)] backdrop-blur-xl p-3 sm:p-5 overflow-x-auto no-scrollbar">
             <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-3 min-w-max mx-auto">
               {Array.from({ length: melody.length }).map((_, i) => {
                 const userMidi = answer[i];
@@ -320,12 +320,12 @@ export default function MelodyExercise() {
                             : dotState === "wrong"
                               ? "bg-rose-500/30 border-rose-400 text-rose-100"
                               : dotState === "focus"
-                                ? "border-amber-300 bg-amber-300/10 text-amber-200 ring-2 ring-amber-300/40"
+                                ? "border-zinc-200/70 bg-white/10 text-white ring-2 ring-white/30"
                                 : userMidi !== null
-                                  ? "border-indigo-400 bg-indigo-500/20 text-white"
+                                  ? "border-zinc-200/60 bg-white/16 text-white"
                                   : "border-white/20 text-white/40 bg-white/5"
                         }
-                        ${playingIndex === i ? "scale-125 ring-4 ring-amber-300/80" : ""}
+                        ${playingIndex === i ? "scale-125 ring-4 ring-white/60" : ""}
                       `}
                     >
                       {userMidi !== null ? midiToName(userMidi) : i + 1}
@@ -342,7 +342,7 @@ export default function MelodyExercise() {
           </div>
 
           {/* 钢琴 */}
-          <div className="rounded-xl bg-black/30 border border-white/10 p-2 sm:p-3">
+          <div className="rounded-3xl bg-zinc-950/42 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.065),0_16px_46px_rgba(0,0,0,0.18)] backdrop-blur-xl p-2 sm:p-3">
             <Piano
               lowMidi={range.kbLow}
               highMidi={range.kbHigh}

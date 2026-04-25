@@ -256,7 +256,7 @@ export default function IntervalExercise() {
             )}
           </div>
 
-          <div className="rounded-xl bg-black/30 border border-white/10 p-5 min-h-[140px] flex flex-col items-center justify-center gap-4">
+          <div className="rounded-3xl bg-zinc-950/42 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.065),0_16px_46px_rgba(0,0,0,0.18)] backdrop-blur-xl p-5 min-h-[140px] flex flex-col items-center justify-center gap-4">
             {isRevealed && round.question && truth ? (
               <RevealView
                 q={round.question}
@@ -268,7 +268,7 @@ export default function IntervalExercise() {
               <p className="text-white/60 text-sm inline-flex items-center gap-2">
                 {round.isPlaying ? (
                   <>
-                    <MusicNoteIcon size={18} className="text-amber-300 animate-pulse" />
+                    <MusicNoteIcon size={18} className="text-zinc-100 animate-pulse" />
                     仔细听…
                   </>
                 ) : (
@@ -403,7 +403,7 @@ function RevealView({
           <span
             key={i}
             className={`px-2 py-1 rounded border border-white/10 ${
-              playingIndex === i ? "bg-amber-300/20 border-amber-300/60 text-amber-200" : ""
+              playingIndex === i ? "bg-white/16 border-zinc-200/60 text-white" : ""
             }`}
           >
             {midiToName(m)}
@@ -433,7 +433,7 @@ function ChoiceChip({
       : state === "wrong"
         ? "bg-rose-500/30 border-rose-400 text-rose-100"
         : state === "selected"
-          ? "bg-indigo-500/30 border-indigo-400 text-white"
+          ? "bg-white/18 border-zinc-200/60 text-white shadow-sm shadow-white/5"
           : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10";
   return (
     <button

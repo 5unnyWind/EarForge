@@ -27,11 +27,13 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-3 sm:px-4 py-4 sm:py-10">
-      <div className="w-full max-w-3xl flex flex-col gap-4 sm:gap-6">
+    <div className="relative min-h-screen flex flex-col items-center px-3 sm:px-4 py-5 sm:py-10 overflow-hidden">
+      <div className="pointer-events-none absolute left-1/2 top-0 h-72 w-2xl -translate-x-1/2 rounded-full bg-white/8 blur-3xl" />
+      <div className="pointer-events-none absolute right-[8%] top-28 h-36 w-36 rounded-full bg-zinc-200/8 blur-2xl" />
+      <div className="relative w-full max-w-4xl flex flex-col gap-4 sm:gap-6">
         <Header />
         <ModuleNav active={active} onChange={setActive} />
-        <main>
+        <main className="rounded-4xl border border-white/10 bg-zinc-950/20 p-5 sm:p-6 shadow-[0_30px_90px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md">
           <Current />
         </main>
         <Footer />
@@ -42,13 +44,16 @@ export default function App() {
 
 function Header() {
   return (
-    <header className="flex items-center justify-between gap-4">
+    <header className="flex items-end justify-between gap-4 px-1 sm:px-2">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-          视唱练耳
+        <div className="mb-2 inline-flex items-center rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-300/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+          EarForge
+        </div>
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-[-0.04em] bg-linear-to-br from-white via-zinc-100 to-zinc-500 bg-clip-text text-transparent drop-shadow-[0_1px_22px_rgba(255,255,255,0.18)]">
+          音感练习
         </h1>
-        <p className="text-xs sm:text-sm text-white/50 mt-0.5">
-          Sight Singing & Ear Training Playground
+        <p className="text-xs sm:text-sm text-zinc-300/55 mt-1.5">
+          精准、克制、可持续的视唱练耳训练
         </p>
       </div>
     </header>
@@ -64,7 +69,7 @@ function ModuleNav({
 }) {
   return (
     <nav
-      className="flex gap-1.5 rounded-2xl bg-white/[0.04] border border-white/10 p-1.5 overflow-x-auto no-scrollbar snap-x snap-mandatory"
+      className="flex gap-1.5 rounded-[1.35rem] bg-zinc-950/50 border border-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.09),inset_0_-1px_0_rgba(0,0,0,0.35),0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl p-1.5 overflow-x-auto no-scrollbar snap-x snap-mandatory"
       aria-label="练习模块"
     >
       {MODULES.map((m) => {
@@ -75,10 +80,10 @@ function ModuleNav({
             key={m.id}
             onClick={() => onChange(m.id)}
             title={m.description}
-            className={`shrink-0 snap-start px-3 py-2 min-h-[40px] rounded-lg text-sm whitespace-nowrap transition flex items-center gap-1.5 active:scale-[0.97] ${
+            className={`shrink-0 snap-start px-3.5 py-2.5 min-h-[42px] rounded-2xl text-sm whitespace-nowrap transition flex items-center gap-1.5 active:scale-[0.97] ${
               isActive
-                ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/30"
-                : "text-white/70 hover:bg-white/10"
+                ? "bg-linear-to-br from-white via-zinc-200 to-zinc-500 text-zinc-950 shadow-[0_10px_30px_rgba(255,255,255,0.12),inset_0_1px_0_rgba(255,255,255,0.75)]"
+                : "text-zinc-300/72 hover:bg-white/9 hover:text-white"
             }`}
           >
             <Icon size={18} />
@@ -92,7 +97,7 @@ function ModuleNav({
 
 function Footer() {
   return (
-    <footer className="text-center text-xs text-white/30 pt-4 pb-2">
+    <footer className="text-center text-xs text-zinc-400/45 pt-4 pb-2">
       采样来自{" "}
       <a
         className="underline"
