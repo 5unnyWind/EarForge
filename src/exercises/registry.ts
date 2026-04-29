@@ -3,6 +3,7 @@ import ContourExercise from "./contour";
 import IntervalExercise from "./interval";
 import ChordExercise from "./chord";
 import ScaleExercise from "./scale";
+import DegreeExercise from "./degree";
 import RhythmExercise from "./rhythm";
 import MelodyExercise from "./melody";
 import {
@@ -19,6 +20,7 @@ export type ModuleId =
   | "interval"
   | "chord"
   | "scale"
+  | "degree"
   | "rhythm"
   | "melody";
 
@@ -39,6 +41,13 @@ export const MODULES: ModuleDef[] = [
     Component: ContourExercise,
   },
   {
+    id: "degree",
+    name: "音级识别",
+    description: "听一个音阶里的音，判断它是第几级",
+    Icon: ScaleIcon,
+    Component: DegreeExercise,
+  },
+  {
     id: "interval",
     name: "音程识别",
     description: "听两个音判断它们的音程关系",
@@ -46,11 +55,11 @@ export const MODULES: ModuleDef[] = [
     Component: IntervalExercise,
   },
   {
-    id: "chord",
-    name: "和弦识别",
-    description: "听一个和弦判断它的性质",
-    Icon: ChordIcon,
-    Component: ChordExercise,
+    id: "rhythm",
+    name: "节奏听写",
+    description: "听一段节奏，从候选项中选出对的那一个",
+    Icon: RhythmIcon,
+    Component: RhythmExercise,
   },
   {
     id: "scale",
@@ -60,11 +69,11 @@ export const MODULES: ModuleDef[] = [
     Component: ScaleExercise,
   },
   {
-    id: "rhythm",
-    name: "节奏听写",
-    description: "听一段节奏，从候选项中选出对的那一个",
-    Icon: RhythmIcon,
-    Component: RhythmExercise,
+    id: "chord",
+    name: "和弦识别",
+    description: "听一个和弦判断它的性质",
+    Icon: ChordIcon,
+    Component: ChordExercise,
   },
   {
     id: "melody",
