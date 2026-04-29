@@ -20,6 +20,10 @@ import { useRound } from "../../hooks/useRound";
 import { loadInstrument, playMelody, playSingleNote } from "../../audio/player";
 import { ExerciseHeader, IdleCard, SettingsCard } from "../shared/Layout";
 import { InstrumentPicker } from "../shared/InstrumentPicker";
+import {
+  DifficultyPresetPicker,
+  type DifficultyPreset,
+} from "../shared/DifficultyPreset";
 import { ChoiceChip, ChoiceGrid } from "../shared/SingleChoice";
 import {
   ArrowRightIcon,
@@ -51,6 +55,24 @@ const PLAY_CONTEXTS = [
 const DEFAULT_SCALES = ["major", "natural-min", "dorian", "mixolydian"];
 const TARGET_PAUSE_MS = 550;
 const SLOW_TARGET_PAUSE_MS = 750;
+
+const DIFFICULTY_PRESETS = {
+  easy: {
+    enabled: ["major", "natural-min"],
+    rootMode: "c",
+    playContext: "root-target",
+  },
+  medium: {
+    enabled: DEFAULT_SCALES,
+    rootMode: "c",
+    playContext: "root-target",
+  },
+  hard: {
+    enabled: SCALES.map((s) => s.id),
+    rootMode: "mid",
+    playContext: "scale-target",
+  },
+} as const;
 
 type RootMode = (typeof ROOT_OPTIONS)[number]["id"];
 type PlayContext = (typeof PLAY_CONTEXTS)[number]["id"];
@@ -99,12 +121,17 @@ export default function DegreeExercise() {
   );
   const [randomInstrument, setRandomInstrument] = usePersistedState<boolean>(
     `settings/${MODULE_ID}/randomInstrument`,
-    true,
+    false,
   );
   const [fixedInstrumentId, setFixedInstrumentId] = usePersistedState<string>(
     `settings/${MODULE_ID}/fixedInstrumentId`,
     "piano",
   );
+  const [difficultyPreset, setDifficultyPreset] =
+    usePersistedState<DifficultyPreset>(
+      `settings/${MODULE_ID}/difficultyPreset`,
+      "medium",
+    );
 
   const historyEntries = useHistory(MODULE_ID);
   const allTime = useMemo(() => aggregate(historyEntries), [historyEntries]);
@@ -118,6 +145,22 @@ export default function DegreeExercise() {
 
   const [answer, setAnswer] = useState<number | null>(null);
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+
+  const markCustomDifficulty = useCallback(() => {
+    setDifficultyPreset("custom");
+  }, [setDifficultyPreset]);
+
+  const applyDifficultyPreset = useCallback(
+    (preset: DifficultyPreset) => {
+      setDifficultyPreset(preset);
+      if (preset === "custom") return;
+      const next = DIFFICULTY_PRESETS[preset];
+      setEnabled([...next.enabled]);
+      setRootMode(next.rootMode as RootMode);
+      setPlayContext(next.playContext as PlayContext);
+    },
+    [setDifficultyPreset, setEnabled, setPlayContext, setRootMode],
+  );
 
   const round = useRound<Question>({
     moduleId: MODULE_ID,
@@ -387,6 +430,10 @@ export default function DegreeExercise() {
       )}
 
       <SettingsCard>
+        <DifficultyPresetPicker
+          value={difficultyPreset}
+          onChange={applyDifficultyPreset}
+        />
         <Field
           label="启用的音阶"
           hint={isFallback ? "未选任何项，已临时使用全部音阶" : undefined}
@@ -394,21 +441,30 @@ export default function DegreeExercise() {
           <ChipMulti
             options={SCALES.map((s) => ({ id: s.id, label: s.zh }))}
             value={enabled}
-            onChange={setEnabled}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setEnabled(v);
+            }}
           />
         </Field>
         <Field label="播放方式">
           <SegBar
             options={PLAY_CONTEXTS.map((c) => ({ id: c.id, label: c.label }))}
             value={playContext}
-            onChange={(v) => setPlayContext(v as PlayContext)}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setPlayContext(v as PlayContext);
+            }}
           />
         </Field>
         <Field label="主音">
           <SegBar
             options={ROOT_OPTIONS.map((r) => ({ id: r.id, label: r.label }))}
             value={rootMode}
-            onChange={(v) => setRootMode(v as RootMode)}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setRootMode(v as RootMode);
+            }}
           />
         </Field>
         <InstrumentPicker

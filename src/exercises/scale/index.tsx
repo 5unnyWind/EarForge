@@ -21,6 +21,10 @@ import { useRound } from "../../hooks/useRound";
 import { loadInstrument, playMelody } from "../../audio/player";
 import { ExerciseHeader, IdleCard, SettingsCard } from "../shared/Layout";
 import { InstrumentPicker } from "../shared/InstrumentPicker";
+import {
+  DifficultyPresetPicker,
+  type DifficultyPreset,
+} from "../shared/DifficultyPreset";
 import { ChoiceChip, ChoiceGrid } from "../shared/SingleChoice";
 import {
   ArrowRightIcon,
@@ -53,6 +57,24 @@ type DirectionMode = (typeof DIRECTIONS)[number]["id"];
 
 const DEFAULT_SCALES = ["major", "natural-min", "harmonic-min", "dorian"];
 
+const DIFFICULTY_PRESETS = {
+  easy: {
+    enabled: ["major", "natural-min"],
+    rangeId: "mid",
+    direction: "up",
+  },
+  medium: {
+    enabled: DEFAULT_SCALES,
+    rangeId: "mid",
+    direction: "up",
+  },
+  hard: {
+    enabled: SCALES.map((s) => s.id),
+    rangeId: "rand",
+    direction: "up-down",
+  },
+} as const;
+
 type Question = {
   rootMidi: number;
   def: ScaleDef;
@@ -74,12 +96,17 @@ export default function ScaleExercise() {
   );
   const [randomInstrument, setRandomInstrument] = usePersistedState<boolean>(
     `settings/${MODULE_ID}/randomInstrument`,
-    true,
+    false,
   );
   const [fixedInstrumentId, setFixedInstrumentId] = usePersistedState<string>(
     `settings/${MODULE_ID}/fixedInstrumentId`,
     "piano",
   );
+  const [difficultyPreset, setDifficultyPreset] =
+    usePersistedState<DifficultyPreset>(
+      `settings/${MODULE_ID}/difficultyPreset`,
+      "medium",
+    );
 
   const historyEntries = useHistory(MODULE_ID);
   const allTime = useMemo(() => aggregate(historyEntries), [historyEntries]);
@@ -93,6 +120,22 @@ export default function ScaleExercise() {
 
   const [answer, setAnswer] = useState<string | null>(null);
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+
+  const markCustomDifficulty = useCallback(() => {
+    setDifficultyPreset("custom");
+  }, [setDifficultyPreset]);
+
+  const applyDifficultyPreset = useCallback(
+    (preset: DifficultyPreset) => {
+      setDifficultyPreset(preset);
+      if (preset === "custom") return;
+      const next = DIFFICULTY_PRESETS[preset];
+      setEnabled([...next.enabled]);
+      setRangeId(next.rangeId);
+      setDirection(next.direction as DirectionMode);
+    },
+    [setDifficultyPreset, setDirection, setEnabled, setRangeId],
+  );
 
   const round = useRound<Question>({
     moduleId: MODULE_ID,
@@ -311,6 +354,10 @@ export default function ScaleExercise() {
       )}
 
       <SettingsCard>
+        <DifficultyPresetPicker
+          value={difficultyPreset}
+          onChange={applyDifficultyPreset}
+        />
         <Field
           label="启用的音阶"
           hint={isFallback ? "未选任何项，已临时使用全部音阶" : undefined}
@@ -318,21 +365,30 @@ export default function ScaleExercise() {
           <ChipMulti
             options={SCALES.map((s) => ({ id: s.id, label: s.zh }))}
             value={enabled}
-            onChange={setEnabled}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setEnabled(v);
+            }}
           />
         </Field>
         <Field label="播放方向">
           <SegBar
             options={DIRECTIONS.map((d) => ({ id: d.id, label: d.label }))}
             value={direction}
-            onChange={(v) => setDirection(v as DirectionMode)}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setDirection(v as DirectionMode);
+            }}
           />
         </Field>
         <Field label="根音">
           <SegBar
             options={RANGE_OPTIONS.map((r) => ({ id: r.id, label: r.label }))}
             value={rangeId}
-            onChange={setRangeId}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setRangeId(v);
+            }}
           />
         </Field>
         <InstrumentPicker

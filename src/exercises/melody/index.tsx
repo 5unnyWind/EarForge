@@ -19,6 +19,10 @@ import { useRound } from "../../hooks/useRound";
 import { loadInstrument, playMelody, playSingleNote } from "../../audio/player";
 import { ExerciseHeader, IdleCard, SettingsCard } from "../shared/Layout";
 import { InstrumentPicker } from "../shared/InstrumentPicker";
+import {
+  DifficultyPresetPicker,
+  type DifficultyPreset,
+} from "../shared/DifficultyPreset";
 import { Piano } from "../../components/Piano";
 import {
   ArrowRightIcon,
@@ -43,6 +47,30 @@ const RANGE_OPTIONS = [
   { id: "narrow", label: "C4–C5 (1 八度)", low: 60, high: 72, kbLow: 60, kbHigh: 72 },
   { id: "normal", label: "G3–G5", low: 55, high: 79, kbLow: 48, kbHigh: 84 },
 ] as const;
+
+const DIFFICULTY_PRESETS = {
+  easy: {
+    length: 3,
+    rangeId: "narrow",
+    speedId: "slow",
+    chromatic: false,
+    showAllLabels: true,
+  },
+  medium: {
+    length: 4,
+    rangeId: "narrow",
+    speedId: "slow",
+    chromatic: false,
+    showAllLabels: false,
+  },
+  hard: {
+    length: 5,
+    rangeId: "normal",
+    speedId: "normal",
+    chromatic: true,
+    showAllLabels: false,
+  },
+} as const;
 
 type Question = number[]; // MIDI 序列
 
@@ -75,6 +103,11 @@ export default function MelodyExercise() {
     `settings/${MODULE_ID}/fixedInstrumentId`,
     "piano",
   );
+  const [difficultyPreset, setDifficultyPreset] =
+    usePersistedState<DifficultyPreset>(
+      `settings/${MODULE_ID}/difficultyPreset`,
+      "medium",
+    );
 
   const historyEntries = useHistory(MODULE_ID);
   const allTime = useMemo(() => aggregate(historyEntries), [historyEntries]);
@@ -92,6 +125,31 @@ export default function MelodyExercise() {
   const [focusIdx, setFocusIdx] = useState(0);
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const [previewMidi, setPreviewMidi] = useState<number | null>(null);
+
+  const markCustomDifficulty = useCallback(() => {
+    setDifficultyPreset("custom");
+  }, [setDifficultyPreset]);
+
+  const applyDifficultyPreset = useCallback(
+    (preset: DifficultyPreset) => {
+      setDifficultyPreset(preset);
+      if (preset === "custom") return;
+      const next = DIFFICULTY_PRESETS[preset];
+      setLength(next.length);
+      setRangeId(next.rangeId);
+      setSpeedId(next.speedId);
+      setChromatic(next.chromatic);
+      setShowAllLabels(next.showAllLabels);
+    },
+    [
+      setChromatic,
+      setDifficultyPreset,
+      setLength,
+      setRangeId,
+      setShowAllLabels,
+      setSpeedId,
+    ],
+  );
 
   const round = useRound<Question>({
     moduleId: MODULE_ID,
@@ -375,32 +433,57 @@ export default function MelodyExercise() {
       )}
 
       <SettingsCard>
+        <DifficultyPresetPicker
+          value={difficultyPreset}
+          onChange={applyDifficultyPreset}
+        />
         <Field label="音符数量">
           <SegBar
             options={LENGTH_OPTIONS.map((n) => ({ id: String(n), label: `${n} 个` }))}
             value={String(length)}
-            onChange={(v) => setLength(Number(v))}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setLength(Number(v));
+            }}
           />
         </Field>
         <Field label="速度">
           <SegBar
             options={SPEED_OPTIONS.map((s) => ({ id: s.id, label: s.label }))}
             value={speedId}
-            onChange={setSpeedId}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setSpeedId(v);
+            }}
           />
         </Field>
         <Field label="音域">
           <SegBar
             options={RANGE_OPTIONS.map((r) => ({ id: r.id, label: r.label }))}
             value={rangeId}
-            onChange={setRangeId}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setRangeId(v);
+            }}
           />
         </Field>
         <Field label="包含黑键 (半音)">
-          <Toggle checked={chromatic} onChange={setChromatic} />
+          <Toggle
+            checked={chromatic}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setChromatic(v);
+            }}
+          />
         </Field>
         <Field label="钢琴所有白键标音名">
-          <Toggle checked={showAllLabels} onChange={setShowAllLabels} />
+          <Toggle
+            checked={showAllLabels}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setShowAllLabels(v);
+            }}
+          />
         </Field>
         <InstrumentPicker
           random={randomInstrument}

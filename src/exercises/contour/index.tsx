@@ -23,6 +23,10 @@ import { useRound } from "../../hooks/useRound";
 import { loadInstrument, playMelody, playSingleNote } from "../../audio/player";
 import { InstrumentPicker } from "../shared/InstrumentPicker";
 import {
+  DifficultyPresetPicker,
+  type DifficultyPreset,
+} from "../shared/DifficultyPreset";
+import {
   ArrowDownIcon,
   ArrowRightIcon,
   ArrowUpIcon,
@@ -51,6 +55,12 @@ const SPEED_OPTIONS = [
   { id: "fast", label: "快", interval: 0.45 },
 ] as const;
 
+const DIFFICULTY_PRESETS = {
+  easy: { length: 3, rangeId: "narrow", speedId: "slow", chromatic: false },
+  medium: { length: 4, rangeId: "normal", speedId: "normal", chromatic: false },
+  hard: { length: 5, rangeId: "wide", speedId: "fast", chromatic: true },
+} as const;
+
 type Question = number[]; // MIDI 数组
 
 export default function ContourExercise() {
@@ -72,7 +82,7 @@ export default function ContourExercise() {
   );
   const [randomInstrument, setRandomInstrument] = usePersistedState<boolean>(
     `settings/${MODULE_ID}/randomInstrument`,
-    true,
+    false,
   );
   const [fixedInstrumentId, setFixedInstrumentId] = usePersistedState<string>(
     `settings/${MODULE_ID}/fixedInstrumentId`,
@@ -82,10 +92,32 @@ export default function ContourExercise() {
     `settings/${MODULE_ID}/debugMode`,
     false,
   );
+  const [difficultyPreset, setDifficultyPreset] =
+    usePersistedState<DifficultyPreset>(
+      `settings/${MODULE_ID}/difficultyPreset`,
+      "medium",
+    );
 
   const [answer, setAnswer] = useState<(Direction | null)[]>([]);
   const [focusIndex, setFocusIndex] = useState(0);
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+
+  const markCustomDifficulty = useCallback(() => {
+    setDifficultyPreset("custom");
+  }, [setDifficultyPreset]);
+
+  const applyDifficultyPreset = useCallback(
+    (preset: DifficultyPreset) => {
+      setDifficultyPreset(preset);
+      if (preset === "custom") return;
+      const next = DIFFICULTY_PRESETS[preset];
+      setLength(next.length);
+      setRangeId(next.rangeId);
+      setSpeedId(next.speedId);
+      setChromatic(next.chromatic);
+    },
+    [setChromatic, setDifficultyPreset, setLength, setRangeId, setSpeedId],
+  );
 
   const historyEntries = useHistory(MODULE_ID);
   const allTime = useMemo(() => aggregate(historyEntries), [historyEntries]);
@@ -369,29 +401,48 @@ export default function ContourExercise() {
       )}
 
       <SettingsCard>
+        <DifficultyPresetPicker
+          value={difficultyPreset}
+          onChange={applyDifficultyPreset}
+        />
         <Field label="音符数量">
           <SegBar
             options={LENGTH_OPTIONS.map((n) => ({ id: String(n), label: `${n} 个` }))}
             value={String(length)}
-            onChange={(v) => setLength(Number(v))}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setLength(Number(v));
+            }}
           />
         </Field>
         <Field label="速度">
           <SegBar
             options={SPEED_OPTIONS.map((s) => ({ id: s.id, label: s.label }))}
             value={speedId}
-            onChange={setSpeedId}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setSpeedId(v);
+            }}
           />
         </Field>
         <Field label="音域">
           <SegBar
             options={RANGE_OPTIONS.map((r) => ({ id: r.id, label: r.label }))}
             value={rangeId}
-            onChange={setRangeId}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setRangeId(v);
+            }}
           />
         </Field>
         <Field label="包含黑键 (半音)">
-          <Toggle checked={chromatic} onChange={setChromatic} />
+          <Toggle
+            checked={chromatic}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setChromatic(v);
+            }}
+          />
         </Field>
         <Field label="调试模式 (显示音名)">
           <Toggle checked={debugMode} onChange={setDebugMode} />

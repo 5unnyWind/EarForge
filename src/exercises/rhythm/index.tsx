@@ -17,6 +17,10 @@ import {
 } from "../../audio/player";
 import { ExerciseHeader, IdleCard, SettingsCard } from "../shared/Layout";
 import { InstrumentPicker } from "../shared/InstrumentPicker";
+import {
+  DifficultyPresetPicker,
+  type DifficultyPreset,
+} from "../shared/DifficultyPreset";
 import { pickCandidates, type RhythmPattern } from "./patterns";
 import * as Tone from "tone";
 import { midiToName } from "../../lib/music";
@@ -45,6 +49,12 @@ const DIFFICULTY_OPTIONS = [
   { id: "2", label: "中等 (含 ♫)" },
   { id: "3", label: "较难 (含 ♬ 切分)" },
 ] as const;
+
+const DIFFICULTY_PRESETS = {
+  easy: { bpmId: "60", diffId: "1", precount: true },
+  medium: { bpmId: "80", diffId: "2", precount: true },
+  hard: { bpmId: "120", diffId: "3", precount: false },
+} as const;
 
 type Question = {
   correct: RhythmPattern;
@@ -101,6 +111,11 @@ export default function RhythmExercise() {
     `settings/${MODULE_ID}/fixedInstrumentId`,
     "xylophone",
   );
+  const [difficultyPreset, setDifficultyPreset] =
+    usePersistedState<DifficultyPreset>(
+      `settings/${MODULE_ID}/difficultyPreset`,
+      "medium",
+    );
 
   const historyEntries = useHistory(MODULE_ID);
   const allTime = useMemo(() => aggregate(historyEntries), [historyEntries]);
@@ -110,6 +125,22 @@ export default function RhythmExercise() {
 
   const [answer, setAnswer] = useState<string | null>(null);
   const [playingHitIdx, setPlayingHitIdx] = useState<number | null>(null);
+
+  const markCustomDifficulty = useCallback(() => {
+    setDifficultyPreset("custom");
+  }, [setDifficultyPreset]);
+
+  const applyDifficultyPreset = useCallback(
+    (preset: DifficultyPreset) => {
+      setDifficultyPreset(preset);
+      if (preset === "custom") return;
+      const next = DIFFICULTY_PRESETS[preset];
+      setBpmId(next.bpmId);
+      setDiffId(next.diffId);
+      setPrecount(next.precount);
+    },
+    [setBpmId, setDiffId, setDifficultyPreset, setPrecount],
+  );
 
   const round = useRound<Question>({
     moduleId: MODULE_ID,
@@ -291,22 +322,38 @@ export default function RhythmExercise() {
       )}
 
       <SettingsCard>
+        <DifficultyPresetPicker
+          value={difficultyPreset}
+          onChange={applyDifficultyPreset}
+        />
         <Field label="速度">
           <SegBar
             options={TEMPO_OPTIONS.map((t) => ({ id: t.id, label: t.label }))}
             value={bpmId}
-            onChange={setBpmId}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setBpmId(v);
+            }}
           />
         </Field>
         <Field label="难度">
           <SegBar
             options={DIFFICULTY_OPTIONS.map((d) => ({ id: d.id, label: d.label }))}
             value={diffId}
-            onChange={setDiffId}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setDiffId(v);
+            }}
           />
         </Field>
         <Field label="先放 4 拍预备拍">
-          <Toggle checked={precount} onChange={setPrecount} />
+          <Toggle
+            checked={precount}
+            onChange={(v) => {
+              markCustomDifficulty();
+              setPrecount(v);
+            }}
+          />
         </Field>
         <InstrumentPicker
           random={randomInstrument}
